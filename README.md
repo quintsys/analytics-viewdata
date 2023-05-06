@@ -8,12 +8,12 @@ Analytics view data, and each record will be associated with a given
 Before running the Cloud Function, the following environment variables must be
 present:
 
-| Name                            | Value  | Required | Summary               |
-|---------------------------------|--------|----------|-----------------------|
-| GA_VIEW_ID                      | string | yes      | The unique table ID of the form `ga:XXXX`, where `XXXX` is the Analytics view (profile) ID for which the query will retrieve the data.|
-| GA_START_DATE                   | string | no       | Start date for fetching Analytics data.<br /> Requests can specify a start date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `3daysAgo`. |
-| GA_END_DATE                     | string | no       | End date for fetching Analytics data.<br /> Request can specify an end date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `today`. |
-| GOOGLE_APPLICATION_CREDENTIALS  | string | yes      | Service account key   |
+| Name            | Value  | Required | Summary                               |
+|-----------------|--------|----------|---------------------------------------|
+| GA_VIEW_ID      | string | yes      | The unique table ID of the form `ga:XXXX`, where `XXXX` is the Analytics view (profile) ID for which the query will retrieve the data.|
+| GA_START_DATE   | string | no       | Start date for fetching Analytics data.<br /> Requests can specify a start date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `3daysAgo`. |
+| GA_END_DATE     | string | no       | End date for fetching Analytics data.<br /> Request can specify an end date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `today`. |
+| GA_SVC_ACCOUNT  | string | yes      | Service account key                   |
 
 ## Usage
 To run the Cloud Function, execute the following command in your terminal:
