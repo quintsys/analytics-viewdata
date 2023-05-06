@@ -2,18 +2,36 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+on:
   push:
     branches:
       - master
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ANALYTICS_VIEWDATA }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Deploy to live channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        id: deploy
+        if: ${{ env.firebaseServiceAccount != ''}}
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_ANALYTICS_VIEWDATA }}'
+          firebaseServiceAccount: '${{ env.firebaseServiceAccount }}'
           channelId: live
           projectId: analytics-viewdata
+      - name: Install dependencies for functions
+        run: |
+          cd functions
+          npm install
+      - name: Deploy functions
+        uses: w9jds/firebase-action@master
+        if: ${{ env.firebaseServiceAccount != ''}}
+        with:
+          GCP_SA_KEY: '${{ env.firebaseServiceAccount }}'
+          PROJECT_ID: analytics-viewdata
+          args: deploy --only functions --message \"${{ github.event.head_commit.message }}\"
