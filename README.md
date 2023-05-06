@@ -1,19 +1,72 @@
 # Google Analytics View Data
-This project integrates with the Google Analytics API to extract metrics from a
-predefined View. The response will contain metrics extracted from the Google
-Analytics view data, and each record will be associated with a given
-[`clientId`][cid].
+This project integrates with the [Google Analytics Core Reporting API][api] to
+extract metrics from a predefined View. The response will contain metrics
+extracted from the Google Analytics view data, and each record will be
+associated with a given [`clientId`][cid].
 
 ## Configuration
+
+This project uses the built-in environment configuration offered by the Firebase
+SDK for Cloud Functions to make it easy to store and retrieve additional
+settings.
+
+More information at https://firebase.google.com/docs/functions/config-env
+
+### Environment variables
 Before running the Cloud Function, the following environment variables must be
 present:
 
+| Name          | Value  | Required | Summary                                 |
+|---------------|--------|----------|-----------------------------------------|
+| GA_VIEW_ID    | string | yes      | The unique table ID of the form `ga:XXXX`, where `XXXX` is the Analytics view (profile) ID for which the query will retrieve the data.|
+| GA_START_DATE | string | no       | Start date for fetching Analytics data.<br /> Requests can specify a start date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `3daysAgo`. |
+| GA_END_DATE   | string | no       | End date for fetching Analytics data.<br /> Request can specify an end date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `today`. |
+
+To set these environment variables, create a `.env` file in the `/functions`
+folder with the desired variable values. For example:
+
+```bash
+GA_VIEW_ID=ga:123456
+GA_START_DATE=yesterday
+GA_END_DATE=today
+```
+
+When deploying your functions using the Firebase CLI, the variables from the
+`.env` file will be automatically loaded. Run the following command to deploy
+the functions:
+
+```bash
+firebase deploy --only functions
+# ...
+# i functions: Loaded environment variables from .env.
+# ...
+```
+
+### Secrets
+The following secret needs to be stored in Cloud Secret Manager:
+
 | Name            | Value  | Required | Summary                               |
 |-----------------|--------|----------|---------------------------------------|
-| GA_VIEW_ID      | string | yes      | The unique table ID of the form `ga:XXXX`, where `XXXX` is the Analytics view (profile) ID for which the query will retrieve the data.|
-| GA_START_DATE   | string | no       | Start date for fetching Analytics data.<br /> Requests can specify a start date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `3daysAgo`. |
-| GA_END_DATE     | string | no       | End date for fetching Analytics data.<br /> Request can specify an end date formatted as `YYYY-MM-DD`, or as a relative date (e.g., `today`, `yesterday`, or `NdaysAgo` where `N` is a positive integer).<br /> Defaults to `today`. |
-| GA_SVC_ACCOUNT  | string | yes      | Service account key                   |
+| GA_SVC_ACCOUNT  | string | yes      | Service account key for Analytics API |
+
+
+To set the secret, use the following command:
+
+```bash
+firebase functions:secrets:set --data-file ./svc-account.json GA_SVC_ACCOUNT
+```
+
+Replace `./svc-account.json` with the path to your service account key file.
+
+Ensure that you have the necessary permissions to manage secrets in Cloud
+Secret Manager.
+
+Once the secret is set, the Firebase Functions runtime will automatically load
+it when running the functions.
+
+Make sure to set all the required environment variables and secrets before
+running your Cloud Function to ensure proper functionality.
+
 
 ## Usage
 To run the Cloud Function, execute the following command in your terminal:
@@ -88,5 +141,6 @@ changes.
 ## License
 This project is licensed under the [MIT License][mit].
 
+[api]: https://developers.google.com/analytics/devguides/reporting/core/v3/
 [cid]: https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference#clientId
 [mit]: https://opensource.org/licenses/MIT
