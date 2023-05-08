@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
-import { defineSecret } from "firebase-functions/params";
-import { google } from "googleapis";
-import { AnalyticsData, Dimensions, Row, RowFormatter } from "./types";
+import {defineSecret} from "firebase-functions/params";
+import {google} from "googleapis";
+import {AnalyticsData, Dimensions, Row, RowFormatter} from "./types";
 
 const serviceAccount = defineSecret("GA_SVC_ACCOUNT");
 
@@ -11,28 +11,28 @@ const dimensions: Dimensions = {
 };
 
 const setCors = (res: functions.Response) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Max-Age', (60 * 60 * 24 * 365).toString());
-}
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Max-Age", (60 * 60 * 24 * 365).toString());
+};
 
-const onError = (res: functions.Response, error: any) => {
+const onError = (res: functions.Response, error: unknown) => {
   functions.logger.error(error);
-  res.status(500).send({ error: "Something went wrong" });
-}
+  res.status(500).send({error: "Something went wrong"});
+};
 
 /**
  * Pulls origin data from a Google Analytics view and returns it as JSON
  * @returns {AnalyticsData[]}
  */
 export const gaViewOriginData = functions
-  .runWith({ secrets: [serviceAccount.name] })
+  .runWith({secrets: [serviceAccount.name]})
   .https.onRequest(
     async (req, res) => {
       try {
         setCors(res);
-        if (req.method == 'OPTIONS') {
+        if (req.method == "OPTIONS") {
           res.sendStatus(200);
         } else {
           const formatter: RowFormatter = (row: Row) => ({
@@ -56,12 +56,12 @@ export const gaViewOriginData = functions
  * @returns {AnalyticsData[]}
  */
 export const gaViewAdData = functions
-  .runWith({ secrets: [serviceAccount.name] })
+  .runWith({secrets: [serviceAccount.name]})
   .https.onRequest(
     async (req, res) => {
       try {
         setCors(res);
-        if (req.method == 'OPTIONS') {
+        if (req.method == "OPTIONS") {
           res.sendStatus(200);
         } else {
           const formatter: RowFormatter = (row: Row) => ({
@@ -121,4 +121,4 @@ const getAnalyticsData = async (dimensions: string) => {
     "metrics": "ga:sessions",
     "dimensions": dimensions,
   });
-}
+};
