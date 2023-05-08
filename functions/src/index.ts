@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
-import {defineSecret} from "firebase-functions/params";
-import {google} from "googleapis";
-import {AnalyticsData, Dimensions, Row, RowFormatter} from "./types";
+import { defineSecret } from "firebase-functions/params";
+import { google } from "googleapis";
+import { AnalyticsData, Dimensions, Row, RowFormatter } from "./types";
+import setCorsHeaders from "./cors";
 
 const serviceAccount = defineSecret("GA_SVC_ACCOUNT");
 
@@ -10,16 +11,9 @@ const dimensions: Dimensions = {
   origin: "ga:dimension5,ga:campaign,ga:source,ga:medium,ga:keyword",
 };
 
-const setCors = (res: functions.Response) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Max-Age", (60 * 60 * 24 * 365).toString());
-};
-
 const onError = (res: functions.Response, error: unknown) => {
   functions.logger.error(error);
-  res.status(500).send({error: "Something went wrong"});
+  res.status(500).send({ error: "Something went wrong" });
 };
 
 /**
@@ -27,11 +21,11 @@ const onError = (res: functions.Response, error: unknown) => {
  * @returns {AnalyticsData[]}
  */
 export const gaViewOriginData = functions
-  .runWith({secrets: [serviceAccount.name]})
+  .runWith({ secrets: [serviceAccount.name] })
   .https.onRequest(
     async (req, res) => {
       try {
-        setCors(res);
+        setCorsHeaders(req, res);
         if (req.method == "OPTIONS") {
           res.sendStatus(200);
         } else {
@@ -56,11 +50,11 @@ export const gaViewOriginData = functions
  * @returns {AnalyticsData[]}
  */
 export const gaViewAdData = functions
-  .runWith({secrets: [serviceAccount.name]})
+  .runWith({ secrets: [serviceAccount.name] })
   .https.onRequest(
     async (req, res) => {
       try {
-        setCors(res);
+        setCorsHeaders(req, res);
         if (req.method == "OPTIONS") {
           res.sendStatus(200);
         } else {
