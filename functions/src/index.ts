@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
-import { defineSecret } from "firebase-functions/params";
-import { google } from "googleapis";
-import { AnalyticsData, Dimensions, Row, RowFormatter } from "./types";
+import {defineSecret} from "firebase-functions/params";
+import {google} from "googleapis";
+import {AnalyticsData, Dimensions, Row, RowFormatter} from "./types";
 import setCorsHeaders from "./cors";
 
 const serviceAccount = defineSecret("GA_SVC_ACCOUNT");
@@ -13,7 +13,7 @@ const dimensions: Dimensions = {
 
 const onError = (res: functions.Response, error: unknown) => {
   functions.logger.error(error);
-  res.status(500).send({ error: "Something went wrong" });
+  res.status(500).send({error: "Something went wrong"});
 };
 
 /**
@@ -21,7 +21,7 @@ const onError = (res: functions.Response, error: unknown) => {
  * @returns {AnalyticsData[]}
  */
 export const gaViewOriginData = functions
-  .runWith({ secrets: [serviceAccount.name] })
+  .runWith({secrets: [serviceAccount.name]})
   .https.onRequest(
     async (req, res) => {
       try {
@@ -50,7 +50,7 @@ export const gaViewOriginData = functions
  * @returns {AnalyticsData[]}
  */
 export const gaViewAdData = functions
-  .runWith({ secrets: [serviceAccount.name] })
+  .runWith({secrets: [serviceAccount.name]})
   .https.onRequest(
     async (req, res) => {
       try {
