@@ -2,19 +2,13 @@ import * as functions from "firebase-functions";
 import {defineSecret} from "firebase-functions/params";
 import {google} from "googleapis";
 import {AnalyticsData, Dimensions, Row, RowFormatter} from "./types";
+import setCorsHeaders from "./cors";
 
 const serviceAccount = defineSecret("GA_SVC_ACCOUNT");
 
 const dimensions: Dimensions = {
   ad: "ga:dimension5,ga:adGroup,ga:adContent,ga:adMatchedQuery",
   origin: "ga:dimension5,ga:campaign,ga:source,ga:medium,ga:keyword",
-};
-
-const setCors = (res: functions.Response) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.header("Access-Control-Max-Age", (60 * 60 * 24 * 365).toString());
 };
 
 const onError = (res: functions.Response, error: unknown) => {
@@ -31,7 +25,7 @@ export const gaViewOriginData = functions
   .https.onRequest(
     async (req, res) => {
       try {
-        setCors(res);
+        setCorsHeaders(req, res);
         if (req.method == "OPTIONS") {
           res.sendStatus(200);
         } else {
@@ -60,7 +54,7 @@ export const gaViewAdData = functions
   .https.onRequest(
     async (req, res) => {
       try {
-        setCors(res);
+        setCorsHeaders(req, res);
         if (req.method == "OPTIONS") {
           res.sendStatus(200);
         } else {
