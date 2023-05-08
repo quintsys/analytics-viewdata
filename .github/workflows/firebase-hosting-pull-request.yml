@@ -21,3 +21,10 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ env.firebaseServiceAccount }}'
           projectId: analytics-viewdata
+      - name: Install dependencies for functions
+        run: |
+          cd functions
+          npm install
+      - name: Lint
+        run: npm run lint
+
