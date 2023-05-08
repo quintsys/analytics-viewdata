@@ -1,0 +1,85 @@
+swagger: '2.0'
+host: 'us-central1-analytics-viewdata.cloudfunctions.net'
+schemes:
+  - https
+info:
+  title: Google Analytics View Data API
+  description: >
+    This project integrates with the Google Analytics Core Reporting API to
+    extract metrics from a predefined View.
+  contact:
+    email: contact@quintsys.com
+  version: 1.0.0
+securityDefinitions:
+  apiKeyAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /gaViewOriginData:
+    get:
+      operationId: gaViewOriginData
+      description: Pulls origin data from the GA view.
+      tags:
+        - ViewData
+      summary: Retrieve origin data from Google Analytics
+      security:
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AnalyticsData'
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /gaViewAdData:
+    get:
+      operationId: gaViewAdData
+      description: Pulls ad data from the GA view.
+      tags:
+        - ViewData
+      summary: Retrieve ad data from Google Analytics
+      security:
+        - apiKeyAuth: []
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AnalyticsData'
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+tags:
+  - name: ViewData
+definitions:
+  AnalyticsData:
+    type: object
+    properties:
+      clientId:
+        type: string
+      campaign:
+        type: string
+      source:
+        type: string
+      medium:
+        type: string
+      keyword:
+        type: string
+      adGroup:
+        type: string
+      adContent:
+        type: string
+      adMatchedQuery:
+        type: string
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
