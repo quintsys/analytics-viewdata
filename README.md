@@ -48,15 +48,18 @@ The following secret needs to be stored in Cloud Secret Manager:
 | Name            | Value  | Required | Summary                               |
 |-----------------|--------|----------|---------------------------------------|
 | GA_SVC_ACCOUNT  | string | yes      | Service account key for Analytics API |
+| GA_BEARER_TOKEN | string | yes      | Bearer token for authorization        |
 
 
 To set the secret, use the following command:
 
 ```bash
 firebase functions:secrets:set --data-file ./svc-account.json GA_SVC_ACCOUNT
+firebase functions:secrets:set GA_BEARER_TOKEN your_bearer_token
 ```
 
-Replace `./svc-account.json` with the path to your service account key file.
+Replace `./svc-account.json` with the path to your service account key file, and
+`your_bearer_token` with the correspondent value.
 
 Ensure that you have the necessary permissions to manage secrets in Cloud
 Secret Manager.
@@ -79,8 +82,23 @@ This will start a local development server and you can trigger the Cloud
 Function using an HTTP request to
 http://localhost:5000/{your-project-id}/{location}/gaViewData
 
-The Cloud Function will extract all records from the Google Analytics view
-within the specified date range and associate each record with a given client ID.
+When making the HTTP request, ensure that the following headers are included:
+
+- Authorization: The Authorization header should follow the format Bearer
+ {token}, where {token} is the actual bearer token value. This header is
+ required to authenticate and authorize the request.
+
+Here's an example of how the headers should look when making an HTTP request to
+the Cloud Function:
+
+```http
+GET /{your-project-id}/{location}/gaViewData HTTP/1.1
+Host: localhost:5000
+Authorization: Bearer {token}
+```
+
+Replace {your-project-id} with your actual Firebase project ID and {location}
+with the appropriate Cloud Functions location.
 
 To deploy the Cloud Function to production, run:
 
